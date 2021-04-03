@@ -171,7 +171,23 @@
             return json_encode($resul);
         }
         private function obtener_proveedores(){
-
+            if(!$this -> id){
+                $resul = $this -> Query("SELECT id_prov, nombre_prov, apellido_prov, telefono_prov, direccion_prov, correo_prov FROM proveedores INNER JOIN categoria1 ON proveedores.id_categoria1 = categoria1.id_cat1 INNER JOIN categoria2 ON proveedores.id_categoria2 = categoria2.id_cat2 WHERE categoria1.nombre_cat1 = '".$this -> cat1."' AND categoria2.nombre_cat2 = '".$this -> cat2."'");
+            }else{
+                $resul = $this -> Query("SELECT id_prov, nombre_prov, apellido_prov, telefono_prov, direccion_prov, correo_prov FROM proveedores WHERE id_prov = ".$this -> id);
+            }
+            $data = [];
+            while($row = mysqli_fetch_array($resul)){
+                $new_data['id_prov'] = $row['id_prov'];
+                $new_data['nombre_prov'] = $row['nombre_prov'];
+                $new_data['apellido_prov'] = $row['apellido_prov'];
+                $new_data['telefono_prov'] = $row['telefono_prov'];
+                $new_data['direccion_prov'] = $row['direccion_prov'];
+                $new_data['apellido_prov'] = $row['apellido_prov'];
+                $new_data['correo_prov'] = $row['correo_prov'];
+                array_push($data, $new_data);
+            }
+            return json_encode($data);
         }
         private function editar_proveedores(){
 
