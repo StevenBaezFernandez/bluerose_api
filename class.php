@@ -96,7 +96,7 @@
         }
 
 
-
+        // galeria
         private function agregar_galeria(){
             $resul['mensaje'] = $this -> Query(
                 "INSERT INTO ".$this -> cat3." (
@@ -111,7 +111,7 @@
                 '".$this -> datos['url_img']."',
                 ".$this -> datos['id_cat1'].",
                 ".$this -> datos['id_cat2'].")"
-            );
+                );
             return json_encode($resul);
         }
         private function obtener_galeria(){
@@ -122,7 +122,10 @@
             }
             $data = [];
             while($row = mysqli_fetch_array($resul)){
-                array_push($data, $row);
+                $new_data['id_img'] = $row['id_img'];
+                $new_data['descripcion_img'] = $row['descripcion_img'];
+                $new_data['url_img'] = $row['url_img'];
+                array_push($data, $new_data);
             }
             return json_encode($data);
         }
@@ -136,7 +139,7 @@
         }
         // paquetes
         private function agregar_paquetes(){
-
+            
         }
         private function obtener_paquetes(){
 
@@ -149,7 +152,23 @@
         }
         // proveedores
         private function agregar_proveedores(){
-
+            $resul['mensaje'] = $this -> Query("INSERT INTO proveedores
+            (nombre_prov, 
+            apellido_prov, 
+            telefono_prov, 
+            direccion_prov, 
+            correo_prov, 
+            id_categoria1, 
+            id_categoria2) 
+            VALUES('".$this -> datos['nombre_prov']."',
+            '".$this -> datos['apellido_prov']."',
+            '".$this -> datos['telefono_prov']."',
+            '".$this -> datos['direccion_prov']."',
+            '".$this -> datos['correo_prov']."',
+            ".$this -> datos['id_cat1'].",
+            ".$this -> datos['id_cat2'].")"
+            );  
+            return json_encode($resul);
         }
         private function obtener_proveedores(){
 
