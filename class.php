@@ -190,7 +190,17 @@
             return json_encode($data);
         }
         private function editar_proveedores(){
+            $resul['mensaje'] = $this -> Query("UPDATE proveedores SET 
+            nombre_prov='".$this -> datos['nombre_prov']."',
+            apellido_prov='".$this -> datos['apellido_prov']."',
+            telefono_prov='".$this -> datos['telefono_prov']."',
+            direccion_prov='".$this -> datos['direccion_prov']."',
+            correo_prov='".$this -> datos['correo_prov']."',
+            id_categoria1=".$this -> datos['id_cat1'].",
+            id_categoria2=".$this -> datos['id_cat2']." 
+            WHERE id_prov = ".$this -> id);
 
+            return json_encode($resul);
         }
         private function eliminar_proveedores(){
 
