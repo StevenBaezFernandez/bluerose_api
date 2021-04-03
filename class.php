@@ -203,7 +203,8 @@
             return json_encode($resul);
         }
         private function eliminar_proveedores(){
-
+            $resul['mensaje'] = $this -> Query("DELETE FROM proveedores WHERE id_prov = ".$this -> id);
+            return json_encode($resul);
         }
 
         
