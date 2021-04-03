@@ -40,11 +40,81 @@
             }            
         }
 
-        private function agregar(){                
-            $resul['mensaje'] = $this -> Query("INSERT INTO ".$this -> cat3." (id_img, descripcion_img, url_img, id_categoria1, id_categoria2) VALUES ('".uniqid()."', '".$this -> datos['descripcion_img']."', '".$this -> datos['url_img']."', ".$this -> datos['id_cat1'].", ".$this -> datos['id_cat2'].")");
+        private function agregar(){   
+            switch($this ->cat3){
+                case 'galeria':
+                    return $this -> agregar_galeria();                
+                break;
+                case 'paquetes':
+                    return $this -> agregar_paquetes();
+                break;  
+                case 'proveedores':
+                    return $this -> agregar_proveedores();
+                break;
+            }             
             return json_encode($resul);
         }
-        private function obtener(){
+        private function obtener(){            
+            switch($this -> cat3){                
+                case 'galeria':
+                   return $this -> obtener_galeria();         
+                break;
+                case 'paquetes':
+                    return $this -> obtener_paquetes();
+                break;
+                case 'proveedores':
+                    return $this -> obtener_proveedores();
+                break;
+            }
+            
+        }
+        private function editar(){
+            switch($this -> cat3){                
+                case 'galeria':
+                   return $this -> editar_galeria();         
+                break;
+                case 'paquetes':
+                    return $this -> editar_paquetes();
+                break;
+                case 'proveedores':
+                    return $this -> editar_proveedores();
+                break;
+            }
+        }
+        private function eliminar(){
+            switch($this -> cat3){                
+                case 'galeria':
+                   return $this -> eliminar_galeria();         
+                break;
+                case 'paquetes':
+                    return $this -> eliminar_paquetes();
+                break;
+                case 'proveedores':
+                    return $this -> eliminar_proveedores();
+                break;
+            }
+        }
+
+
+
+        private function agregar_galeria(){
+            $resul['mensaje'] = $this -> Query(
+                "INSERT INTO ".$this -> cat3." (
+                    id_img,
+                    descripcion_img,
+                    url_img,
+                    id_categoria1,
+                    id_categoria2
+                )
+                VALUES ('".uniqid()."',
+                '".$this -> datos['descripcion_img']."',
+                '".$this -> datos['url_img']."',
+                ".$this -> datos['id_cat1'].",
+                ".$this -> datos['id_cat2'].")"
+            );
+            return json_encode($resul);
+        }
+        private function obtener_galeria(){
             if(!$this -> id){
                 $resul = $this -> Query("SELECT id_img, descripcion_img, url_img, categoria1.nombre_cat1, categoria1.descripcion_cat1,categoria2.nombre_cat2, categoria2.descripcion_cat2 FROM ".$this -> cat3." INNER JOIN categoria1 ON ".$this -> cat3.".id_categoria1 = categoria1.id_cat1 INNER JOIN categoria2 ON ".$this -> cat3.".id_categoria2 = categoria2.id_cat2 WHERE categoria1.nombre_cat1 = '".$this -> cat1."' AND categoria2.nombre_cat2 = '".$this -> cat2."'");
             }else{
@@ -52,25 +122,46 @@
             }
             $data = [];
             while($row = mysqli_fetch_array($resul)){
-                $new_data['id_img'] = $row['id_img'];
-                $new_data['descripcion_img'] = $row['descripcion_img'];
-                $new_data['url_img'] = $row['url_img'];
-                $new_data['nombre_cat1'] = $row['nombre_cat1'];
-                $new_data['nombre_cat2'] = $row['nombre_cat2'];
-
-                array_push($data, $new_data);
+                array_push($data, $row);
             }
-
             return json_encode($data);
         }
-        private function editar(){
+        private function editar_galeria(){
             $resul['mensaje'] = $this -> Query("UPDATE ".$this -> cat3." SET descripcion_img = '".$this -> datos['descripcion_img']."', url_img = '".$this -> datos['url_img']."', id_categoria1 = ".$this -> datos['id_cat1'].", id_categoria2 = ".$this -> datos['id_cat2']." WHERE id_img = '".$this -> id."'");
             return json_encode($resul);
         }
-        private function eliminar(){
+        private function eliminar_galeria(){
             $resul['mensaje'] = $this -> Query("DELETE FROM ".$this -> cat3." WHERE id_img = '".$this -> id."'");
             return json_encode($resul);
         }
+        // paquetes
+        private function agregar_paquetes(){
+
+        }
+        private function obtener_paquetes(){
+
+        }
+        private function editar_paquetes(){
+
+        }
+        private function eliminar_paquetes(){
+
+        }
+        // proveedores
+        private function agregar_proveedores(){
+
+        }
+        private function obtener_proveedores(){
+
+        }
+        private function editar_proveedores(){
+
+        }
+        private function eliminar_proveedores(){
+
+        }
+
+        
     }
     
 
