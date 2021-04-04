@@ -139,10 +139,40 @@
         }
         // paquetes
         private function agregar_paquetes(){
-            
+            $data_insert = "";
+            foreach($this -> datos['paquete'] as $paquete){
+                $data_insert .= "(".$this -> datos['id_paq'].",'.$paquete[nombre].'),";
+            }
+            $resul['mensaje'] = $this -> Query("INSERT INTO paquetes_items(id_paq, nombre_item) VALUES ".trim($data_insert, ","));
+            return json_encode($resul);
         }
         private function obtener_paquetes(){
-
+            if($this -> id){
+                $resul = $this -> Query("SELECT nombre_paq, nombre_item FROM `paquetes_items` 
+                INNER JOIN paquetes 
+                ON paquetes_items.id_paq = paquetes.id_paq 
+                WHERE paquetes.id_paq = ".$this -> id);
+            }else{
+            $resul = $this -> Query("SELECT nombre_paq, nombre_item FROM `paquetes_items` 
+            INNER JOIN paquetes 
+            ON paquetes_items.id_paq = paquetes.id_paq 
+            INNER JOIN categoria1 
+            ON paquetes.id_categoria1 = categoria1.id_cat1 
+            INNER JOIN categoria2 
+            ON paquetes.id_categoria2 = categoria2.id_cat2 
+            WHERE categoria1.nombre_cat1 = 'novia' 
+            AND categoria2.nombre_cat2 = 'maquillaje-peinado'
+            ");
+            }
+            $paquetes = [];
+            while($row = mysqli_fetch_array($resul)){
+                if(array_key_exists($row['nombre_paq'], $paquetes)){
+                    $paquetes[$row['nombre_paq']] .= $row['nombre_item']. "/";
+                }else{
+                    $paquetes[$row['nombre_paq']] = $row['nombre_item']. "/";
+                }
+            }
+            return json_encode($paquetes);
         }
         private function editar_paquetes(){
 
@@ -208,8 +238,7 @@
         }
 
         
-    }
-    
+    } 
 
 
 
