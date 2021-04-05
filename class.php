@@ -182,7 +182,10 @@
             return json_encode($resul);            
         }
         private function eliminar_item_paq(){
-
+            $resul['mensaje'] = $this -> Query("DELETE FROM 
+            paquetes_items 
+            WHERE id_item = ".$this -> id);
+            return json_encode($resul);
         }
         // proveedores
         private function agregar_proveedores(){
