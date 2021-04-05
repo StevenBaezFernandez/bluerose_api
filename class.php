@@ -163,7 +163,21 @@
             return json_encode($resul);
         }
         private function obtener_paquete(){
-            return "funcion obtener paquete";
+            if($this -> id){
+                $resul = $this -> Query("SELECT * FROM paquetes WHERE id_paq = ".$this -> id);
+            }else{
+                $resul = $this -> Query("SELECT * FROM paquetes");
+            }
+            $data = [];
+            while($row = mysqli_fetch_array($resul)){
+                $new_data['id_paq'] = $row['id_paq'];
+                $new_data['nombre_paq'] = $row['nombre_paq'];
+                $new_data['id_categoria1'] = $row['id_categoria1'];
+                $new_data['id_categoria2'] = $row['id_categoria2'];
+
+                array_push($data, $new_data);
+            }
+            return json_encode($data);
         }
         private function editar_paquete(){
             return "funcion editar paquete";
