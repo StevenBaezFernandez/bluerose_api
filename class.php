@@ -189,7 +189,8 @@
             return json_encode($resul);
         }
         private function eliminar_paquete(){
-            return "funcion eliminar paquete";
+            $resul['mensaje'] = ("DELETE FROM paquetes WHERE id_paq = ".$this -> id);
+            return json_encode($resul);
         }
 
         // Items paquetes
