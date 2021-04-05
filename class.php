@@ -180,7 +180,13 @@
             return json_encode($data);
         }
         private function editar_paquete(){
-            return "funcion editar paquete";
+            $resul['mensaje'] = $this -> Query("UPDATE paquetes SET 
+            nombre_paq='".$this -> datos['nombre_paq']."',
+            descripcion_paq='".$this -> datos['descripcion_paq']."',
+            id_categoria1=".$this -> datos['id_cat1'].",
+            id_categoria2=".$this -> datos['id_cat2']." 
+            WHERE id_paq = ".$this -> id);
+            return json_encode($resul);
         }
         private function eliminar_paquete(){
             return "funcion eliminar paquete";
