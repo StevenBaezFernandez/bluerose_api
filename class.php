@@ -45,23 +45,28 @@
                 case 'galeria':
                     return $this -> agregar_galeria();                
                 break;
-                case 'paquetes':
+                case 'items-paquetes':
                     return $this -> agregar_item_paq();
                 break;  
+                case 'paquetes':
+                    return $this -> agregar_paquete();
+                break; 
                 case 'proveedores':
                     return $this -> agregar_proveedores();
                 break;
-            }             
-            return json_encode($resul);
+            }
         }
         private function obtener(){            
             switch($this -> cat3){                
                 case 'galeria':
                    return $this -> obtener_galeria();         
                 break;
-                case 'paquetes':
+                case 'items-paquetes':
                     return $this -> obtener_item_paq();
                 break;
+                case 'paquetes':
+                    return $this -> obtener_paquete();
+                break; 
                 case 'proveedores':
                     return $this -> obtener_proveedores();
                 break;
@@ -73,9 +78,12 @@
                 case 'galeria':
                    return $this -> editar_galeria();         
                 break;
-                case 'paquetes':
+                case 'items-paquetes':
                     return $this -> editar_item_paq();
                 break;
+                case 'paquetes':
+                    return $this -> editar_paquete();
+                break; 
                 case 'proveedores':
                     return $this -> editar_proveedores();
                 break;
@@ -86,9 +94,12 @@
                 case 'galeria':
                    return $this -> eliminar_galeria();         
                 break;
-                case 'paquetes':
+                case 'items-paquetes':
                     return $this -> eliminar_item_paq();
                 break;
+                case 'paquetes':
+                    return $this -> eliminar_paquete();
+                break; 
                 case 'proveedores':
                     return $this -> eliminar_proveedores();
                 break;
@@ -137,6 +148,30 @@
             $resul['mensaje'] = $this -> Query("DELETE FROM ".$this -> cat3." WHERE id_img = '".$this -> id."'");
             return json_encode($resul);
         }
+
+        // paquetes
+        private function agregar_paquete(){
+            $resul['mensaje'] = $this ->Query("INSERT INTO paquetes
+            (nombre_paq, 
+            descripcion_paq, 
+            id_categoria1, 
+            id_categoria2) 
+            VALUES ('".$this -> datos['nombre_paq']."',
+            '".$this -> datos['descripcion_paq']."',
+            ".$this -> datos['id_cat1'].",
+            ".$this -> datos['id_cat2'].")");
+            return json_encode($resul);
+        }
+        private function obtener_paquete(){
+            return "funcion obtener paquete";
+        }
+        private function editar_paquete(){
+            return "funcion editar paquete";
+        }
+        private function eliminar_paquete(){
+            return "funcion eliminar paquete";
+        }
+
         // Items paquetes
         private function agregar_item_paq(){
             $data_insert = "";
@@ -148,12 +183,12 @@
         }
         private function obtener_item_paq(){
             if($this -> id){
-                $resul = $this -> Query("SELECT nombre_paq, nombre_item FROM `paquetes_items` 
+                $resul = $this -> Query("SELECT nombre_paq, nombre_item FROM paquetes_items 
                 INNER JOIN paquetes 
                 ON paquetes_items.id_paq = paquetes.id_paq 
                 WHERE paquetes.id_paq = ".$this -> id);
             }else{
-            $resul = $this -> Query("SELECT nombre_paq, nombre_item FROM `paquetes_items` 
+            $resul = $this -> Query("SELECT nombre_paq, nombre_item FROM paquetes_items 
             INNER JOIN paquetes 
             ON paquetes_items.id_paq = paquetes.id_paq 
             INNER JOIN categoria1 
