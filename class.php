@@ -46,7 +46,7 @@
                     return $this -> agregar_galeria();                
                 break;
                 case 'paquetes':
-                    return $this -> agregar_paquetes();
+                    return $this -> agregar_item_paq();
                 break;  
                 case 'proveedores':
                     return $this -> agregar_proveedores();
@@ -60,7 +60,7 @@
                    return $this -> obtener_galeria();         
                 break;
                 case 'paquetes':
-                    return $this -> obtener_paquetes();
+                    return $this -> obtener_item_paq();
                 break;
                 case 'proveedores':
                     return $this -> obtener_proveedores();
@@ -74,7 +74,7 @@
                    return $this -> editar_galeria();         
                 break;
                 case 'paquetes':
-                    return $this -> editar_paquetes();
+                    return $this -> editar_item_paq();
                 break;
                 case 'proveedores':
                     return $this -> editar_proveedores();
@@ -87,7 +87,7 @@
                    return $this -> eliminar_galeria();         
                 break;
                 case 'paquetes':
-                    return $this -> eliminar_paquetes();
+                    return $this -> eliminar_item_paq();
                 break;
                 case 'proveedores':
                     return $this -> eliminar_proveedores();
@@ -137,8 +137,8 @@
             $resul['mensaje'] = $this -> Query("DELETE FROM ".$this -> cat3." WHERE id_img = '".$this -> id."'");
             return json_encode($resul);
         }
-        // paquetes
-        private function agregar_paquetes(){
+        // Items paquetes
+        private function agregar_item_paq(){
             $data_insert = "";
             foreach($this -> datos['paquete'] as $paquete){
                 $data_insert .= "(".$this -> datos['id_paq'].",'.$paquete[nombre].'),";
@@ -146,7 +146,7 @@
             $resul['mensaje'] = $this -> Query("INSERT INTO paquetes_items(id_paq, nombre_item) VALUES ".trim($data_insert, ","));
             return json_encode($resul);
         }
-        private function obtener_paquetes(){
+        private function obtener_item_paq(){
             if($this -> id){
                 $resul = $this -> Query("SELECT nombre_paq, nombre_item FROM `paquetes_items` 
                 INNER JOIN paquetes 
@@ -160,8 +160,8 @@
             ON paquetes.id_categoria1 = categoria1.id_cat1 
             INNER JOIN categoria2 
             ON paquetes.id_categoria2 = categoria2.id_cat2 
-            WHERE categoria1.nombre_cat1 = 'novia' 
-            AND categoria2.nombre_cat2 = 'maquillaje-peinado'
+            WHERE categoria1.nombre_cat1 = '".$this -> cat1."' 
+            AND categoria2.nombre_cat2 = '".$this -> cat2."'
             ");
             }
             $paquetes = [];
@@ -174,10 +174,14 @@
             }
             return json_encode($paquetes);
         }
-        private function editar_paquetes(){
-
+        private function editar_item_paq(){
+            $resul['mensaje'] = $this -> Query("UPDATE paquetes_items SET 
+            id_paq=".$this -> datos['id_paq'].", 
+            nombre_item= '".$this -> datos['nombre']."' 
+            WHERE id_item = ".$this -> datos['id_item']);
+            return json_encode($resul);            
         }
-        private function eliminar_paquetes(){
+        private function eliminar_item_paq(){
 
         }
         // proveedores
