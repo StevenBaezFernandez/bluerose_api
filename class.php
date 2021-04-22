@@ -223,12 +223,13 @@
             $paquetes = [];
             while($row = mysqli_fetch_array($resul)){
                 if(array_key_exists($row['nombre_paq'], $paquetes)){
-                    $paquetes[$row['nombre_paq']] .= $row['nombre_item']. "/";
+                    $paquetes[$row['nombre_paq']][] .= $row['nombre_item'];
                 }else{
-                    $paquetes[$row['nombre_paq']] = $row['nombre_item']. "/";
+                    $paquetes[$row['nombre_paq']][] = $row['nombre_item'];
                 }
             }
-            return json_encode($paquetes);
+            $arr[]=$paquetes;
+            return json_encode($arr);
         }
         private function editar_item_paq(){
             $resul['mensaje'] = $this -> Query("UPDATE paquetes_items SET 
