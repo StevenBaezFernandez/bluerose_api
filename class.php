@@ -222,20 +222,17 @@
             // }
             $paquetes = [];
             $resul_paq = $this -> Query("SELECT nombre_paq FROM `paquetes`");
-            $nombres_paq = [];
-            while($row = mysqli_fetch_array($resul_paq)){
-                $nombres_paq[] = $row['nombre_paq'];
-            }
-            foreach($nombres_paq as $paq){
+            while($row_paq = mysqli_fetch_array($resul_paq)){
+                $nombre_paq = $row_paq['nombre_paq'];
                 $resul_items = $this -> Query("SELECT paquetes_items.id_item, paquetes_items.nombre_item 
-                FROM `paquetes_items` inner join paquetes ON paquetes_items.id_paq = paquetes.id_paq WHERE paquetes.nombre_paq = '".$paq."'");
-
+                FROM `paquetes_items` inner join paquetes ON paquetes_items.id_paq = paquetes.id_paq WHERE paquetes.nombre_paq = '".$nombre_paq."'");
                 while($row = mysqli_fetch_array($resul_items)){
-                    $paquete['nombre_paq'][$paq] = $paq;
-                    $paquete['items'][$paq][] = $row['nombre_item'];
+                    $paquete['nombre_paq'] = $nombre_paq;
+                    $paquete['items'][] = $row['nombre_item'];
                 }
+                array_push($paquetes, $paquete);
+                unset($paquete);
             }
-            array_push($paquetes, $paquete);
             // $paquetes = [];
             // while($row = mysqli_fetch_array($resul)){
             //     if(!in_array($row['nombre_paq'], $paquetes)){
