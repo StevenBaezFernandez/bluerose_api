@@ -226,11 +226,14 @@
                 $nombre_paq = $row_paq['nombre_paq'];
                 $resul_items = $this -> Query("SELECT paquetes_items.id_item, paquetes_items.nombre_item 
                 FROM `paquetes_items` inner join paquetes ON paquetes_items.id_paq = paquetes.id_paq WHERE paquetes.nombre_paq = '".$nombre_paq."'");
+                $paquete = [];
                 while($row = mysqli_fetch_array($resul_items)){
                     $paquete['nombre_paq'] = $nombre_paq;
                     $paquete['items'][] = $row['nombre_item'];
                 }
-                array_push($paquetes, $paquete);
+                if(count($paquete) !== 0){
+                    array_push($paquetes, $paquete);
+                }
                 unset($paquete);
             }
             // $paquetes = [];
