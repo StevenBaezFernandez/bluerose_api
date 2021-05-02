@@ -8,13 +8,15 @@
 
         public $cat1;
         public $cat2;
+        public $index_cat1;
+        public $index_cat2;
         public $cat3;
         public $method;
         public $id;
         public $datos;
 
-        public function __construct($cat1, $cat2, $cat3, $method, $id=false, $datos=false){
-
+        public function __construct($cat1, $cat2, $cat3, $method, $id=false, $datos=false){      
+            
             parent:: __construct($this -> host, $this->user, $this->pass, $this-> db_name);
 
             $this -> cat1 = $cat1;
@@ -24,9 +26,11 @@
             $this -> id = $id;
             $this -> datos = json_decode($datos, true);
 
+            $this -> obtener_index_cat();
+            
             switch($this -> method){
                 case 'POST':
-                   echo $this -> agregar();
+                   echo( $this -> agregar());
                 break;
                 case 'GET':
                    echo $this -> obtener();
@@ -37,7 +41,7 @@
                 case 'DELETE':
                    echo $this -> eliminar();
                 break;
-            }            
+            } 
         }
 
         private function agregar(){   
@@ -103,6 +107,17 @@
                 case 'proveedores':
                     return $this -> eliminar_proveedores();
                 break;
+            }
+        }
+
+        private function obtener_index_cat(){
+            $resul_cat1 = $this -> Query("SELECT id_cat1 FROM categoria1 WHERE nombre_cat1 = '".$this -> cat1."'");
+            $resul_cat2 = $this -> Query("SELECT id_cat2 FROM categoria2 WHERE nombre_cat2 = '".$this -> cat2."'");
+            while($row = mysqli_fetch_array($resul_cat1)){
+                $this -> index_cat1 = $row['id_cat1'];
+            }
+            while($row = mysqli_fetch_array($resul_cat2)){
+                $this -> index_cat2 = $row['id_cat2'];
             }
         }
 
@@ -248,6 +263,7 @@
         }
         // proveedores
         private function agregar_proveedores(){
+            
             $resul['mensaje'] = $this -> Query("INSERT INTO proveedores
             (nombre_prov, 
             apellido_prov, 
@@ -256,15 +272,15 @@
             correo_prov, 
             id_categoria1, 
             id_categoria2) 
-            VALUES('".$this -> datos['nombre_prov']."',
-            '".$this -> datos['apellido_prov']."',
-            '".$this -> datos['telefono_prov']."',
-            '".$this -> datos['direccion_prov']."',
-            '".$this -> datos['correo_prov']."',
-            ".$this -> datos['id_cat1'].",
-            ".$this -> datos['id_cat2'].")"
+            VALUES('".$this -> datos['nombre']."',
+            '".$this -> datos['apellido']."',
+            '".$this -> datos['telefono']."',
+            '".$this -> datos['direccion']."',
+            '".$this -> datos['correo']."',
+            ".$this -> index_cat1.",
+            ".$this -> index_cat2.")"
             );  
-            return json_encode($resul);
+            return $this -> index_cat1;
         }
         private function obtener_proveedores(){
             if(!$this -> id){
@@ -287,13 +303,11 @@
         }
         private function editar_proveedores(){
             $resul['mensaje'] = $this -> Query("UPDATE proveedores SET 
-            nombre_prov='".$this -> datos['nombre_prov']."',
-            apellido_prov='".$this -> datos['apellido_prov']."',
-            telefono_prov='".$this -> datos['telefono_prov']."',
-            direccion_prov='".$this -> datos['direccion_prov']."',
-            correo_prov='".$this -> datos['correo_prov']."',
-            id_categoria1=".$this -> datos['id_cat1'].",
-            id_categoria2=".$this -> datos['id_cat2']." 
+            nombre_prov='".$this -> datos['nombre']."',
+            apellido_prov='".$this -> datos['apellido']."',
+            telefono_prov='".$this -> datos['telefono']."',
+            direccion_prov='".$this -> datos['direccion']."',
+            correo_prov='".$this -> datos['correo']."'
             WHERE id_prov = ".$this -> id);
 
             return json_encode($resul);
