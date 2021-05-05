@@ -237,13 +237,17 @@
                 ON paquetes_items.id_paq = paquetes.id_paq 
                 WHERE paquetes.nombre_paq = '".$nombre_paq."'");
                 $paquete = [];
-                while($row = mysqli_fetch_array($resul_items)){
+                
+                if(mysqli_num_rows($resul_items)){
+                    while($row = mysqli_fetch_array($resul_items)){
+                        $paquete['nombre_paq'] = $nombre_paq;
+                        $paquete['items'][] = $row['nombre_item'];
+                    }
+                }else{
                     $paquete['nombre_paq'] = $nombre_paq;
-                    $paquete['items'][] = $row['nombre_item'];
+                    $paquete['items'] = 'empty';
                 }
-                if(count($paquete) !== 0){
-                    array_push($paquetes, $paquete);
-                }
+                array_push($paquetes, $paquete);
                 unset($paquete);
             }
             return json_encode($paquetes);
