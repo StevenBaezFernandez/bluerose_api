@@ -241,7 +241,7 @@
                 if(mysqli_num_rows($resul_items)){
                     while($row = mysqli_fetch_array($resul_items)){
                         $paquete['nombre_paq'] = $nombre_paq;
-                        $paquete['items'][] = $row['nombre_item'];
+                        $paquete['items'][] = $row['nombre_item'] . "  //".$row['id_item'];
                     }
                 }else{
                     $paquete['nombre_paq'] = $nombre_paq;
