@@ -15,7 +15,7 @@
         public $id;
         public $datos;
 
-        public function __construct($cat1, $cat2, $cat3, $method, $id=false, $datos=false){      
+        public function __construct($cat1, $cat2, $cat3, $method, $paquete=false, $id=false, $datos=false){      
             
             parent:: __construct($this -> host, $this->user, $this->pass, $this-> db_name);
 
@@ -23,6 +23,7 @@
             $this -> cat2 = $cat2;
             $this -> cat3 = $cat3;
             $this -> method = $method;
+            $this -> paquete = $paquete;
             $this -> id = $id;
             $this -> datos = json_decode($datos, true);
 
@@ -218,39 +219,51 @@
             return json_encode($resul);
         }
         private function obtener_item_paq(){
-            $paquetes = [];
-            if(!$this -> id){
-            $resul_paq = $this -> Query("SELECT nombre_paq FROM paquetes 
-            INNER JOIN categoria1 
-            ON paquetes.id_categoria1 = categoria1.id_cat1 
-            INNER JOIN categoria2 
-            ON paquetes.id_categoria2 = categoria2.id_cat2 
-            WHERE categoria1.nombre_cat1 = '".$this -> cat1."' AND categoria2.nombre_cat2 = '".$this -> cat2."'");
-            }else{
-                $resul_paq = $this -> Query("SELECT nombre_paq FROM paquetes WHERE id_paq = ".$this -> id);
-            }
-            while($row_paq = mysqli_fetch_array($resul_paq)){
-                $nombre_paq = $row_paq['nombre_paq'];
-                $resul_items = $this -> Query("SELECT paquetes_items.id_item, paquetes_items.nombre_item 
-                FROM `paquetes_items` 
-                inner join paquetes 
-                ON paquetes_items.id_paq = paquetes.id_paq 
-                WHERE paquetes.nombre_paq = '".$nombre_paq."'");
-                $paquete = [];
+            // $paquetes = [];
+            // if(!$this -> id){
+            // $resul_paq = $this -> Query("SELECT nombre_paq FROM paquetes 
+            // INNER JOIN categoria1 
+            // ON paquetes.id_categoria1 = categoria1.id_cat1 
+            // INNER JOIN categoria2 
+            // ON paquetes.id_categoria2 = categoria2.id_cat2 
+            // WHERE categoria1.nombre_cat1 = '".$this -> cat1."' AND categoria2.nombre_cat2 = '".$this -> cat2."'");
+            // }else{
+            //     $resul_paq = $this -> Query("SELECT nombre_paq FROM paquetes WHERE id_paq = ".$this -> id);
+            // }
+            // while($row_paq = mysqli_fetch_array($resul_paq)){
+            //     $nombre_paq = $row_paq['nombre_paq'];
                 
-                if(mysqli_num_rows($resul_items)){
-                    while($row = mysqli_fetch_array($resul_items)){
-                        $paquete['nombre_paq'] = $nombre_paq;
-                        $paquete['items'][] = $row['nombre_item'] . "  //".$row['id_item'];
-                    }
-                }else{
-                    $paquete['nombre_paq'] = $nombre_paq;
-                    $paquete['items'] = 'empty';
-                }
-                array_push($paquetes, $paquete);
-                unset($paquete);
+            //     $paquete = [];
+                
+            //     if(mysqli_num_rows($resul_items)){
+            //         while($row = mysqli_fetch_array($resul_items)){
+            //             $paquete['nombre_paq'] = $nombre_paq;
+            //             $paquete['items'][] = $row['nombre_item'] . "  //".$row['id_item'];
+            //         }
+            //     }else{
+            //         $paquete['nombre_paq'] = $nombre_paq;
+            //         $paquete['items'] = 'empty';
+            //     }
+            //     array_push($paquetes, $paquete);
+            //     unset($paquete);
+            // }
+            // return json_encode($paquetes);
+            $resul_items = $this -> Query("SELECT paquetes_items.id_item, paquetes_items.nombre_item, paquetes.nombre_paq
+            FROM `paquetes_items` 
+            inner join paquetes 
+            ON paquetes_items.id_paq = paquetes.id_paq 
+            WHERE paquetes.id_paq = '".$this -> paquete."'");
+            $items_paq = [];
+            $temp_items = [];
+            while($row = mysqli_fetch_array($resul_items)){
+                $items_paq['paquete'] = $row['nombre_paq'];
+                $item['id'] = $row['id_item'];
+                $item['nombre'] = $row['nombre_item'];
+                array_push($temp_items, $item);
             }
-            return json_encode($paquetes);
+            // $json_temp_items = json_encode($temp_items);
+            $items_paq['items'] = $temp_items;
+            return json_encode($items_paq);
         }
         private function editar_item_paq(){
             $resul['mensaje'] = $this -> Query("UPDATE paquetes_items SET 
