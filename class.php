@@ -233,9 +233,9 @@
         }
         private function editar_item_paq(){
             $resul['mensaje'] = $this -> Query("UPDATE paquetes_items SET 
-            id_paq=".$this -> datos['id_paq'].", 
-            nombre_item= '".$this -> datos['nombre']."' 
-            WHERE id_item = ".$this -> datos['id_item']);
+            id_paq=".$this -> datos['paq'].", 
+            nombre_item= '".$this -> datos['item']."' 
+            WHERE id_item = ".$this -> datos['id']);
             return json_encode($resul);            
         }
         private function eliminar_item_paq(){
