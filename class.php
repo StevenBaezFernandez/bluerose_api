@@ -15,7 +15,7 @@
         public $id;
         public $datos;
 
-        public function __construct($cat1, $cat2, $cat3, $method, $paquete=false, $id=false, $datos=false){      
+        public function __construct($cat1, $cat2, $cat3, $method, $paquete=false, $id=false, $items=false, $datos=false){      
             
             parent:: __construct($this -> host, $this->user, $this->pass, $this-> db_name);
 
@@ -25,6 +25,7 @@
             $this -> method = $method;
             $this -> paquete = $paquete;
             $this -> id = $id;
+            $this -> items = $items;
             $this -> datos = json_decode($datos, true);
 
             $this -> obtener_index_cat();
@@ -239,10 +240,20 @@
             return json_encode($resul);            
         }
         private function eliminar_item_paq(){
-            $resul['mensaje'] = $this -> Query("DELETE FROM 
-            paquetes_items 
-            WHERE id_item = ".$this -> id);
-            return json_encode($resul);
+            if($this -> items){
+                $items = explode('/', $this -> items);
+                foreach($items as $item){
+                    $resul['mensaje'] = $this -> Query("DELETE FROM 
+                    paquetes_items 
+                    WHERE id_item = ". (int)$item);
+                }
+                return json_encode($this -> items);
+            }else{
+                $resul['mensaje'] = $this -> Query("DELETE FROM 
+                paquetes_items 
+                WHERE id_item = ".$this -> id);
+                return json_encode($resul);
+            }
         }
         // proveedores
         private function agregar_proveedores(){

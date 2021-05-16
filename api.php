@@ -10,6 +10,11 @@
         }else{
             $id = $_GET['id'];
         }
+        if(!isset($_GET['items']) || $_GET['items'] == 'false'){
+            $items = false;
+        }else{
+            $items = $_GET['items'];
+        }
 
         if(!isset($_GET['paquete']) || !$_GET['paquete']){
             $paquete = false;
@@ -25,6 +30,7 @@
             $_SERVER['REQUEST_METHOD'],
             $paquete, 
             $id, 
+            $items,
             file_get_contents('php://input')
         );
 
