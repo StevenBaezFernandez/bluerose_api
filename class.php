@@ -13,6 +13,8 @@
         public $cat3;
         public $method;
         public $id;
+        public $items;
+        public $paquete;
         public $datos;
 
         public function __construct($cat1, $cat2, $cat3, $method, $paquete=false, $id=false, $items=false, $datos=false){      
@@ -168,22 +170,20 @@
 
         // paquetes
         private function agregar_paquete(){
-            $resul['mensaje'] = $this ->Query("INSERT INTO paquetes
+            $resul['mensaje'] = $this -> Query("INSERT INTO paquetes
             (nombre_paq, 
-            descripcion_paq, 
             id_categoria1, 
             id_categoria2) 
             VALUES ('".$this -> datos['nombre_paq']."',
-            '".$this -> datos['descripcion_paq']."',
-            ".$this -> datos['id_cat1'].",
-            ".$this -> datos['id_cat2'].")");
+            ".$this -> index_cat1.",
+            ".$this -> index_cat2.")");
             return json_encode($resul);
         }
         private function obtener_paquete(){
             if($this -> id){
                 $resul = $this -> Query("SELECT * FROM paquetes WHERE id_paq = ".$this -> id);
             }else{
-                $resul = $this -> Query("SELECT * FROM paquetes");
+                $resul = $this -> Query("SELECT * FROM paquetes INNER JOIN categoria1 ON paquetes.id_categoria1 = categoria1.id_cat1 INNER JOIN categoria2 ON paquetes.id_categoria2 = categoria2.id_cat2 WHERE categoria1.nombre_cat1 = '".$this -> cat1."' AND categoria2.nombre_cat2 = '".$this -> cat2."'");
             }
             $data = [];
             while($row = mysqli_fetch_array($resul)){
@@ -198,15 +198,19 @@
         }
         private function editar_paquete(){
             $resul['mensaje'] = $this -> Query("UPDATE paquetes SET 
-            nombre_paq='".$this -> datos['nombre_paq']."',
-            descripcion_paq='".$this -> datos['descripcion_paq']."',
-            id_categoria1=".$this -> datos['id_cat1'].",
-            id_categoria2=".$this -> datos['id_cat2']." 
+            nombre_paq='".$this -> datos['nombre_paq']."'
             WHERE id_paq = ".$this -> id);
             return json_encode($resul);
         }
         private function eliminar_paquete(){
-            $resul['mensaje'] = ("DELETE FROM paquetes WHERE id_paq = ".$this -> id);
+            $resul['mensaje'] = $this -> Query("DELETE FROM 
+            paquetes_items 
+            WHERE id_paq = ".$this -> id);
+
+            $resul['mensaje'] = $this -> Query("DELETE FROM 
+            paquetes 
+            WHERE id_paq = ".$this -> id);
+
             return json_encode($resul);
         }
 
