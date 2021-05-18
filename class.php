@@ -151,9 +151,10 @@
             // move_uploaded_file($this -> datos['image']['tmp_name'], $ruta);
 
             $str = $this -> datos;
-            $filename = md5(time()).".png";
+            $filename = md5(time()).'.png';
             $path = 'images/'.$filename;
             file_put_contents($path,$str);
+
 
 
             // $resul['mensaje'] = $this -> Query(
@@ -170,7 +171,7 @@
             //     ".$this -> datos['id_cat1'].",
             //     ".$this -> datos['id_cat2'].")"
             //     );
-            return json_encode($path);
+            return ;
         }
         private function obtener_galeria(){
             if(!$this -> id){
