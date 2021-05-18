@@ -17,9 +17,21 @@
         public $paquete;
         public $datos;
 
-        public function __construct($cat1, $cat2, $cat3, $method, $paquete=false, $id=false, $items=false, $datos=false){      
+        public function __construct(
+            $cat1, 
+            $cat2, 
+            $cat3, 
+            $method, 
+            $paquete=false, 
+            $id=false, 
+            $items=false, 
+            $datos=false){      
             
-            parent:: __construct($this -> host, $this->user, $this->pass, $this-> db_name);
+            parent:: __construct(
+                $this -> host, 
+                $this->user, 
+                $this->pass, 
+                $this-> db_name);
 
             $this -> cat1 = $cat1;
             $this -> cat2 = $cat2;
@@ -28,7 +40,7 @@
             $this -> paquete = $paquete;
             $this -> id = $id;
             $this -> items = $items;
-            $this -> datos = json_decode($datos, true);
+            $this -> datos = $datos;
 
             $this -> obtener_index_cat();
             
@@ -125,24 +137,40 @@
             }
         }
 
+        // private function upload_image(){
+        //     // $ruta = 'images/'. $this -> file['upload-image']['name'];
+        //     // move_uploaded_file($file['upload-image']['tmp_name'], $ruta);
+        //     // var_dump($this -> file);
+        //     return $this -> datos;
+        // }
+
 
         // galeria
         private function agregar_galeria(){
-            $resul['mensaje'] = $this -> Query(
-                "INSERT INTO ".$this -> cat3." (
-                    id_img,
-                    descripcion_img,
-                    url_img,
-                    id_categoria1,
-                    id_categoria2
-                )
-                VALUES ('".uniqid()."',
-                '".$this -> datos['descripcion_img']."',
-                '".$this -> datos['url_img']."',
-                ".$this -> datos['id_cat1'].",
-                ".$this -> datos['id_cat2'].")"
-                );
-            return json_encode($resul);
+            // $ruta = 'images/'. $this -> datos['image']['name'];
+            // move_uploaded_file($this -> datos['image']['tmp_name'], $ruta);
+
+            $str = $this -> datos;
+            $filename = md5(time()).".png";
+            $path = 'images/'.$filename;
+            file_put_contents($path,$str);
+
+
+            // $resul['mensaje'] = $this -> Query(
+            //     "INSERT INTO ".$this -> cat3." (
+            //         id_img,
+            //         descripcion_img,
+            //         url_img,
+            //         id_categoria1,
+            //         id_categoria2
+            //     )
+            //     VALUES ('".uniqid()."',
+            //     '".$this -> datos['descripcion_img']."',
+            //     '".$this -> datos['url_img']."',
+            //     ".$this -> datos['id_cat1'].",
+            //     ".$this -> datos['id_cat2'].")"
+            //     );
+            return json_encode($path);
         }
         private function obtener_galeria(){
             if(!$this -> id){
