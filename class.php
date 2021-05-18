@@ -136,60 +136,34 @@
                 $this -> index_cat2 = $row['id_cat2'];
             }
         }
-
-        // private function upload_image(){
-        //     // $ruta = 'images/'. $this -> file['upload-image']['name'];
-        //     // move_uploaded_file($file['upload-image']['tmp_name'], $ruta);
-        //     // var_dump($this -> file);
-        //     return $this -> datos;
-        // }
-
-
+        
         // galeria
         private function agregar_galeria(){
-            // $ruta = 'images/'. $this -> datos['image']['name'];
-            // move_uploaded_file($this -> datos['image']['tmp_name'], $ruta);
-
             $str = $this -> datos;
             $filename = md5(time()).'.png';
             $path = 'images/'.$filename;
-            file_put_contents($path,$str);
-
-
-
-            // $resul['mensaje'] = $this -> Query(
-            //     "INSERT INTO ".$this -> cat3." (
-            //         id_img,
-            //         descripcion_img,
-            //         url_img,
-            //         id_categoria1,
-            //         id_categoria2
-            //     )
-            //     VALUES ('".uniqid()."',
-            //     '".$this -> datos['descripcion_img']."',
-            //     '".$this -> datos['url_img']."',
-            //     ".$this -> datos['id_cat1'].",
-            //     ".$this -> datos['id_cat2'].")"
-            //     );
-            return ;
+            
+            if(file_put_contents($path,$str)){
+                $resul['mensaje'] = $this -> Query("INSERT INTO galeria (id_img,url_img, id_categoria1, id_categoria2) VALUES ('".uniqid()."', 'http://localhost/bluerose_api/".$path."', ".$this -> index_cat1.", ".$this -> index_cat2.")");
+                return json_encode($resul);                
+            }            
         }
         private function obtener_galeria(){
             if(!$this -> id){
-                $resul = $this -> Query("SELECT id_img, descripcion_img, url_img, categoria1.nombre_cat1, categoria1.descripcion_cat1,categoria2.nombre_cat2, categoria2.descripcion_cat2 FROM ".$this -> cat3." INNER JOIN categoria1 ON ".$this -> cat3.".id_categoria1 = categoria1.id_cat1 INNER JOIN categoria2 ON ".$this -> cat3.".id_categoria2 = categoria2.id_cat2 WHERE categoria1.nombre_cat1 = '".$this -> cat1."' AND categoria2.nombre_cat2 = '".$this -> cat2."'");
+                $resul = $this -> Query("SELECT id_img, url_img, categoria1.nombre_cat1, categoria1.descripcion_cat1,categoria2.nombre_cat2, categoria2.descripcion_cat2 FROM ".$this -> cat3." INNER JOIN categoria1 ON ".$this -> cat3.".id_categoria1 = categoria1.id_cat1 INNER JOIN categoria2 ON ".$this -> cat3.".id_categoria2 = categoria2.id_cat2 WHERE categoria1.nombre_cat1 = '".$this -> cat1."' AND categoria2.nombre_cat2 = '".$this -> cat2."'");
             }else{
-                $resul = $this -> Query("SELECT id_img, descripcion_img, url_img, categoria1.nombre_cat1, categoria1.descripcion_cat1,categoria2.nombre_cat2, categoria2.descripcion_cat2 FROM ".$this -> cat3." INNER JOIN categoria1 ON ".$this -> cat3.".id_categoria1 = categoria1.id_cat1 INNER JOIN categoria2 ON ".$this -> cat3.".id_categoria2 = categoria2.id_cat2 WHERE id_img = '".$this -> id."'");
+                $resul = $this -> Query("SELECT id_img, url_img, categoria1.nombre_cat1, categoria1.descripcion_cat1,categoria2.nombre_cat2, categoria2.descripcion_cat2 FROM ".$this -> cat3." INNER JOIN categoria1 ON ".$this -> cat3.".id_categoria1 = categoria1.id_cat1 INNER JOIN categoria2 ON ".$this -> cat3.".id_categoria2 = categoria2.id_cat2 WHERE id_img = '".$this -> id."'");
             }
             $data = [];
             while($row = mysqli_fetch_array($resul)){
                 $new_data['id_img'] = $row['id_img'];
-                $new_data['descripcion_img'] = $row['descripcion_img'];
                 $new_data['url_img'] = $row['url_img'];
                 array_push($data, $new_data);
             }
             return json_encode($data);
         }
         private function editar_galeria(){
-            $resul['mensaje'] = $this -> Query("UPDATE ".$this -> cat3." SET descripcion_img = '".$this -> datos['descripcion_img']."', url_img = '".$this -> datos['url_img']."', id_categoria1 = ".$this -> datos['id_cat1'].", id_categoria2 = ".$this -> datos['id_cat2']." WHERE id_img = '".$this -> id."'");
+            $resul['mensaje'] = $this -> Query("UPDATE ".$this -> cat3." SET url_img = '".$this -> datos['url_img']."', id_categoria1 = ".$this -> datos['id_cat1'].", id_categoria2 = ".$this -> datos['id_cat2']." WHERE id_img = '".$this -> id."'");
             return json_encode($resul);
         }
         private function eliminar_galeria(){
@@ -250,7 +224,7 @@
         }
         private function obtener_item_paq(){
             $resul_items = $this -> Query("SELECT paquetes_items.id_item, paquetes_items.nombre_item, paquetes.nombre_paq
-            FROM `paquetes_items` 
+            FROM paquetes_items 
             inner join paquetes 
             ON paquetes_items.id_paq = paquetes.id_paq 
             WHERE paquetes.id_paq = '".$this -> paquete."'");
