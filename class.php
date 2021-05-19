@@ -167,7 +167,22 @@
             return json_encode($resul);
         }
         private function eliminar_galeria(){
-            $resul['mensaje'] = $this -> Query("DELETE FROM ".$this -> cat3." WHERE id_img = '".$this -> id."'");
+
+            $resul_img = $this -> Query("SELECT id_img, url_img, categoria1.nombre_cat1, categoria1.descripcion_cat1,categoria2.nombre_cat2, categoria2.descripcion_cat2 FROM ".$this -> cat3." INNER JOIN categoria1 ON ".$this -> cat3.".id_categoria1 = categoria1.id_cat1 INNER JOIN categoria2 ON ".$this -> cat3.".id_categoria2 = categoria2.id_cat2 WHERE id_img = '".$this -> id."'");
+
+            $row = mysqli_fetch_array($resul_img);
+            $url = $row['url_img'];
+            $porcion = explode("/", $url);
+            $file_pointer = "./images/".$porcion[5];
+
+            if (!unlink($file_pointer)) { 
+                $resul['mensaje'] = "$file_pointer cannot be deleted due to an error"; 
+            } 
+            else { 
+                $resul['mensaje'] = "$file_pointer has been deleted"; 
+            } 
+
+            $this -> Query("DELETE FROM ".$this -> cat3." WHERE id_img = '".$this -> id."'");
             return json_encode($resul);
         }
 
