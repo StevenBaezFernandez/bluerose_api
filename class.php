@@ -40,7 +40,7 @@
             $this -> paquete = $paquete;
             $this -> id = $id;
             $this -> items = $items;
-            $this -> datos = $datos;
+            $this -> datos = json_decode($datos, true);
 
             $this -> obtener_index_cat();
             
@@ -139,7 +139,7 @@
         
         // galeria
         private function agregar_galeria(){
-            $str = $this -> datos;
+            $str =  file_get_contents('php://input');
             $filename = md5(time()).'.png';
             $path = 'images/'.$filename;
             
