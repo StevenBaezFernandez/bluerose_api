@@ -324,7 +324,7 @@
             ".$this -> index_cat1.",
             ".$this -> index_cat2.")"
             );  
-            return $this -> index_cat1;
+            return json_encode($resul);
         }
         private function obtener_proveedores(){
             if(!$this -> id){
