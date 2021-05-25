@@ -2,10 +2,13 @@
     class DB extends mysqli{
 
         private $host = "localhost";
-        private $user = "root";
-        private $pass = "";
+        private $db_user = "root";
+        private $db_pass = "";
         private $db_name = "bluerose_db";
 
+        public $session;
+        public $user;
+        public $pass;
         public $cat1;
         public $cat2;
         public $index_cat1;
@@ -18,21 +21,27 @@
         public $datos;
 
         public function __construct(
-            $cat1, 
-            $cat2, 
-            $cat3, 
-            $method, 
-            $paquete=false, 
-            $id=false, 
-            $items=false, 
-            $datos=false){      
+            $session = false,
+            $user = false,
+            $pass = false,
+            $cat1 = false, 
+            $cat2 = false, 
+            $cat3 = false, 
+            $method = false, 
+            $paquete = false, 
+            $id = false, 
+            $items = false, 
+            $datos = false){      
             
             parent:: __construct(
                 $this -> host, 
-                $this->user, 
-                $this->pass, 
-                $this-> db_name);
+                $this -> db_user, 
+                $this -> db_pass, 
+                $this -> db_name);
 
+            $this -> session = $session;
+            $this -> user = $user;
+            $this -> pass = $pass;
             $this -> cat1 = $cat1;
             $this -> cat2 = $cat2;
             $this -> cat3 = $cat3;
@@ -44,21 +53,50 @@
 
             $this -> obtener_index_cat();
             
-            switch($this -> method){
-                case 'POST':
-                   echo( $this -> agregar());
-                break;
-                case 'GET':
-                   echo $this -> obtener();
-                break;
-                case 'PUT':
-                   echo $this -> editar();
-                break;
-                case 'DELETE':
-                   echo $this -> eliminar();
-                break;
-            } 
+            if($this -> session ){
+                echo json_encode($this -> open_session());
+            }else{
+                switch($this -> method){
+                    case 'POST':
+                       echo( $this -> agregar());
+                    break;
+                    case 'GET':
+                       echo $this -> obtener();
+                    break;
+                    case 'PUT':
+                       echo $this -> editar();
+                    break;
+                    case 'DELETE':
+                       echo $this -> eliminar();
+                    break;
+                } 
+            }
         }
+
+        private function open_session(){
+            $resul_login = $this -> Query("SELECT * FROM `login` WHERE user = '".$this -> user."' and pass = '".$this -> pass."'");
+            
+            if(mysqli_num_rows($resul_login)){
+                return true;
+            }else{
+                return false;
+            }
+
+        }
+        private function verif_session(){
+
+        }
+
+        private function obtener_index_cat(){
+            $resul_cat1 = $this -> Query("SELECT id_cat1 FROM categoria1 WHERE nombre_cat1 = '".$this -> cat1."'");
+            $resul_cat2 = $this -> Query("SELECT id_cat2 FROM categoria2 WHERE nombre_cat2 = '".$this -> cat2."'");
+            while($row = mysqli_fetch_array($resul_cat1)){
+                $this -> index_cat1 = $row['id_cat1'];
+            }
+            while($row = mysqli_fetch_array($resul_cat2)){
+                $this -> index_cat2 = $row['id_cat2'];
+            }
+        }        
 
         private function agregar(){   
             switch($this ->cat3){
@@ -126,16 +164,6 @@
             }
         }
 
-        private function obtener_index_cat(){
-            $resul_cat1 = $this -> Query("SELECT id_cat1 FROM categoria1 WHERE nombre_cat1 = '".$this -> cat1."'");
-            $resul_cat2 = $this -> Query("SELECT id_cat2 FROM categoria2 WHERE nombre_cat2 = '".$this -> cat2."'");
-            while($row = mysqli_fetch_array($resul_cat1)){
-                $this -> index_cat1 = $row['id_cat1'];
-            }
-            while($row = mysqli_fetch_array($resul_cat2)){
-                $this -> index_cat2 = $row['id_cat2'];
-            }
-        }
         
         // galeria
         private function agregar_galeria(){

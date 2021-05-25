@@ -26,6 +26,9 @@
 
         require_once 'class.php';
         $prueba = new DB(
+            false,
+            false,
+            false,
             $_GET['cat1'], 
             $_GET['cat2'], 
             $_GET['cat3'], 
@@ -36,9 +39,30 @@
             file_get_contents('php://input')
         );
 
+    }elseif( isset($_GET['session']) ){
+        session_start();
+        if( isset($_GET['user'], $_GET['pass']) ){
+            $user = $_GET['user'];
+            $pass = $_GET['pass'];
+        }else{
+            $user = false;
+            $pass = false;
+        }
+        require_once 'class.php';
+        $prueba = new DB(
+            $_GET['session'],
+            $user,
+            $pass,
+            false, 
+            false, 
+            false, 
+            $_SERVER['REQUEST_METHOD'],
+            false, 
+            false, 
+            false,
+            file_get_contents('php://input'));
+        // session_destroy();
+
+
     }
-
-
-
-
 ?>
