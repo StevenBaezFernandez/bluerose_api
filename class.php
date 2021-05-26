@@ -297,7 +297,7 @@
                     paquetes_items 
                     WHERE id_item = ". (int)$item);
                 }
-                return json_encode($this -> items);
+                return json_encode($resul);
             }else{
                 $resul['mensaje'] = $this -> Query("DELETE FROM 
                 paquetes_items 
